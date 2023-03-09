@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,5 +28,13 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Paginator::useBootstrap();
+
+        Gate::define('Administrator', function (User $user) {
+            return $user->hasRole('Administrator');
+        });
+
+        Gate::define('Writer', function (User $user) {
+            return $user->hasRole('Writer');
+        });
     }
 }

@@ -42,7 +42,17 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function articleModel(){
-        return $this->hasMany(ArticleModel::class); 
+    public function post(){
+        return $this->hasMany(Post::class); 
+    }
+
+    public function roles()
+    {
+        return User::select("users.*", "users_roles.*")->join("users_roles", "users_roles.id", "=", "users.role_id");
+    }
+
+    public function hasRole($role_name)
+    {
+        return $this->roles()->where('users.id', '=', auth()->user()->id)->where('users_roles.name', '=', $role_name)->count() == 1;
     }
 }

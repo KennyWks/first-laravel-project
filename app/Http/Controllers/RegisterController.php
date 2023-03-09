@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
-    //
     public function index(){
+        $this->authorize('Administrator');
         return view('register.index', [
             'title' => 'Register',
             'active' => 'register'
@@ -17,6 +17,7 @@ class RegisterController extends Controller
     }
 
     public function store(Request $request){
+       $this->authorize('Administrator');
        $validatedData = $request->validate([
             'name' => 'required|max:255',
             'username' => ['required', 'min:3', 'max:255', 'unique:users'],
@@ -24,14 +25,10 @@ class RegisterController extends Controller
             'password' => 'required|min:2|max:255'
         ]);
 
-        // $validatedData['password'] = bcrypt($validatedData['password']);
         $validatedData['password'] = Hash::make($validatedData['password']);
 
         User::create($validatedData);
 
-        // $request->session()->flash('success', 'Registrasion successfull! Please login.');
-        // return redirect('/login');
-        
         return redirect('/login')->with('success', 'Registrasion successfull! Please login.');
     }
 }
